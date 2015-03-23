@@ -28,7 +28,7 @@ public class ApiSessions extends JsonpController {
 
     public static void lightningTalks(boolean details) {
         List<LightningTalk> talks = LightningTalk.findAllOn(ConferenceEvent.CURRENT);
-        renderJSON(talks, new LightningTalkJsonSerializer(false));//getSerializers(details));
+        renderJSON(talks, details ? DETAILED_LT_SERIALIZER : LT_SERIALIZER);
     }
 
     public static void lightningTalk(long id, boolean details) {
