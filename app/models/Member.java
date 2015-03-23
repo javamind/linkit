@@ -5,6 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.*;
 import controllers.JobFetchUserTimeline;
 import controllers.JobMajUserRegisteredTicketing;
+import controllers.api.NoExposeExclusionStrategy;
 import helpers.JavaExtensions;
 import helpers.badge.BadgeComputationContext;
 import helpers.badge.BadgeComputer;
@@ -144,6 +145,7 @@ public class Member extends Model implements Lookable, Comparable<Member> {
     public Set<Badge> badges = EnumSet.noneOf(Badge.class);
 
     @ManyToMany(mappedBy="speakers")
+    @NoExposeExclusionStrategy.NoExpose
     public Set<Session> sessions = new HashSet<Session>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)

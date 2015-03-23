@@ -1,50 +1,51 @@
 package controllers.api;
 
 import com.google.gson.JsonSerializer;
-import models.*;
 
 import java.util.List;
 
+import models.ConferenceEvent;
+import models.Member;
+import models.Sponsor;
+import models.Staff;
+import models.Talk;
+import models.Vote;
+
 public class ApiMembers extends JsonpController {
 
-    private static JsonSerializer MEMBER_SERIALIZERS[] = new JsonSerializer[] {
-            new MemberJsonSerializer(false),
-            new SponsorJsonSerializer(false),
-            new StaffJsonSerializer(false),
-            new InterestJsonSerializer(),
-            new SharedLinkJsonSerializer()
-    };
+    private static JsonSerializer DETAILED_SPONSOR_SERIALIZER = new SponsorJsonSerializer(true);
+    private static JsonSerializer DETAILED_STAFF_SERIALIZER = new StaffJsonSerializer(true);
+    private static JsonSerializer DETAILED_MEMBER_SERIALIZER = new MemberJsonSerializer(true);
+    private static JsonSerializer SPONSOR_SERIALIZER = new SponsorJsonSerializer(false);
+    private static JsonSerializer STAFF_SERIALIZER = new StaffJsonSerializer(false);
+    private static JsonSerializer MEMBER_SERIALIZER = new MemberJsonSerializer(false);
+    private static JsonSerializer TALK_SERIALIZER = new TalkJsonSerializer(true);
 
-    private static JsonSerializer DETAILED_MEMBER_SERIALIZERS[] = new JsonSerializer[] {
-            new MemberJsonSerializer(true),
-            new SponsorJsonSerializer(true),
-            new StaffJsonSerializer(true),
-            new InterestJsonSerializer(),
-            new SharedLinkJsonSerializer()
-    };
-
-    private static JsonSerializer TALK_SERIALIZERS[] = new JsonSerializer[] {
-            new TalkJsonSerializer(true),
-            new LightningTalkJsonSerializer(true),
-    };
 
     public static void speakers(boolean details) {
         List<Member> speakers = Talk.findAllSpeakersOn(ConferenceEvent.CURRENT);
-        renderJSON(speakers, getSerializers(details));
+        for (Member m : speakers) {
+            m.sessions = null;
+        }
+        renderJSON(Member.class, speakers, details ? DETAILED_MEMBER_SERIALIZER : MEMBER_SERIALIZER);
     }
 
     public static void sponsors(boolean details) {
         List<Sponsor> sponsors = Sponsor.findOn(ConferenceEvent.CURRENT);
-        renderJSON(sponsors, getSerializers(details));
+        renderJSON(Sponsor.class, sponsors, details ? DETAILED_SPONSOR_SERIALIZER : SPONSOR_SERIALIZER);
     }
+
     public static void staff(boolean details) {
         List<Staff> staff = Staff.findAll();
-        renderJSON(staff, getSerializers(details));
+        renderJSON(Staff.class, staff, details ? DETAILED_STAFF_SERIALIZER : STAFF_SERIALIZER);
     }
 
     public static void members(boolean details) {
         List<Member> members = Member.findAll();
-        renderJSON(members, getSerializers(details));
+        for (Member m : members) {
+            m.sessions = null;
+        }
+        renderJSON(Member.class, members, details ? DETAILED_MEMBER_SERIALIZER : MEMBER_SERIALIZER);
     }
 
     public static void member(long id, boolean details) {
@@ -59,12 +60,9 @@ public class ApiMembers extends JsonpController {
 
     private static void member(Member member, boolean details) {
         notFoundIfNull(member);
-        renderJSON(member, getSerializers(details));
+        renderJSON(Member.class, member, details ? DETAILED_MEMBER_SERIALIZER : MEMBER_SERIALIZER);
     }
 
-    private static JsonSerializer[] getSerializers(boolean details) {
-        return details ? DETAILED_MEMBER_SERIALIZERS : MEMBER_SERIALIZERS;
-    }
 
     public static void favorites(long memberId) {
         Member member = Member.findById(memberId);
@@ -79,6 +77,6 @@ public class ApiMembers extends JsonpController {
     private static void favorites(Member member) {
         notFoundIfNull(member);
         List<Talk> favorites = Vote.findFavoriteTalksByMemberOn(member, ConferenceEvent.CURRENT);
-        renderJSON(favorites, TALK_SERIALIZERS);
+        renderJSON(Talk.class, favorites, TALK_SERIALIZER);
     }
 }

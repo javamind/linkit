@@ -1,13 +1,19 @@
 package controllers.api;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
-import helpers.JSON;
-import models.Member;
+
 import org.apache.commons.collections.CollectionUtils;
 
 import java.lang.reflect.Type;
+
+import models.Interest;
+import models.Member;
+import models.Session;
+import models.SharedLink;
 
 public abstract class AbstractMemberJsonSerializer {
 
@@ -31,16 +37,31 @@ public abstract class AbstractMemberJsonSerializer {
         result.addProperty("nbConsults", member.nbConsults);
 
         if (CollectionUtils.size(member.sharedLinks) != 0) {
-            result.add("sharedLinks", jsonSerializationContext.serialize(member.sharedLinks));
+            JsonArray sharedLinks = new JsonArray();
+            for (SharedLink sl : member.sharedLinks) {
+                JsonObject link = new JsonObject();
+                link.addProperty("id", sl.id);
+                link.addProperty("name", sl.name);
+                link.addProperty("url", sl.URL);
+                link.addProperty("ordernum", sl.ordernum);
+                sharedLinks.add(link);
+            }
+            result.add("sharedLinks", sharedLinks);
         }
 
         if (CollectionUtils.size(member.interests) != 0) {
-            if (details) {
-                result.add("interests", jsonSerializationContext.serialize(member.interests));
-            } else {
-                result.add("interests", JSON.toJsonArrayOfIds(member.interests));
+            JsonArray interests = new JsonArray();
+            for (Interest i : member.interests) {
+                JsonObject interest = new JsonObject();
+                interest.addProperty("id", i.id);
+                interest.addProperty("name", i.name);
+                interest.addProperty("url", ApiUrl.getInterestUrl(i.id));
+                interests.add(interest);
             }
+            result.add("interests", interests);
         }
+
+
 
         return result;
     }
