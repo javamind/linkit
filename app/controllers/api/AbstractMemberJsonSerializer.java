@@ -3,13 +3,13 @@ package controllers.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
 import org.apache.commons.collections.CollectionUtils;
 
 import java.lang.reflect.Type;
 
+import helpers.JSON;
 import models.Interest;
 import models.Member;
 import models.Session;
@@ -61,6 +61,26 @@ public abstract class AbstractMemberJsonSerializer {
             result.add("interests", interests);
         }
 
+        if (CollectionUtils.size(member.sessions) != 0) {
+            if(details) {
+                JsonArray sessions = new JsonArray();
+                for (Session s : member.sessions) {
+                    JsonObject session = new JsonObject();
+                    session.addProperty("id", s.id);
+                    session.addProperty("title", s.title);
+                    session.addProperty("summary", s.summary);
+                    session.addProperty("description", s.description);
+                    if (s.lang != null) {
+                        result.addProperty("language", s.lang.toString());
+                    }
+                    sessions.add(session);
+                }
+                result.add("sessions", sessions);
+            }
+            else {
+                result.add("sessions", JSON.toJsonArrayOfIds(member.sessions));
+            }
+        }
 
 
         return result;

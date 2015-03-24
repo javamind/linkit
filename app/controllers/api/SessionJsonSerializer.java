@@ -38,19 +38,23 @@ public abstract class SessionJsonSerializer {
         }
 
         if (CollectionUtils.size(session.speakers) != 0) {
-            JsonArray speakers = new JsonArray();
-            for (Member s : session.speakers) {
-                JsonObject speaker = new JsonObject();
-                speaker.addProperty("id", s.id);
-                if(details) {
+            if(details) {
+                JsonArray speakers = new JsonArray();
+                for (Member s : session.speakers) {
+                    JsonObject speaker = new JsonObject();
+                    speaker.addProperty("id", s.id);
                     speaker.addProperty("firstname", s.firstname);
                     speaker.addProperty("lastname", s.lastname);
                     speaker.addProperty("urlimage", s.getUrlImage());
                     speaker.addProperty("url", ApiUrl.getMemberUrl(s.id));
+                    speakers.add(speaker);
                 }
-                speakers.add(speaker);
+                result.add("speakers", speakers);
             }
-            result.add("speakers", speakers);
+            else {
+                result.add("speakers", JSON.toJsonArrayOfIds(session.speakers));
+            }
+
         }
 
         return result;
