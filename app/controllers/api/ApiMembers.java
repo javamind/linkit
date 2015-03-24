@@ -24,9 +24,6 @@ public class ApiMembers extends JsonpController {
 
     public static void speakers(boolean details) {
         List<Member> speakers = Talk.findAllSpeakersOn(ConferenceEvent.CURRENT);
-        for (Member m : speakers) {
-            m.sessions = null;
-        }
         renderJSON(Member.class, speakers, details ? DETAILED_MEMBER_SERIALIZER : MEMBER_SERIALIZER);
     }
 
@@ -42,9 +39,6 @@ public class ApiMembers extends JsonpController {
 
     public static void members(boolean details) {
         List<Member> members = Member.findAll();
-        for (Member m : members) {
-            m.sessions = null;
-        }
         renderJSON(Member.class, members, details ? DETAILED_MEMBER_SERIALIZER : MEMBER_SERIALIZER);
     }
 
