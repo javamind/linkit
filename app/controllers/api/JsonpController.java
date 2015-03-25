@@ -29,20 +29,22 @@ public class JsonpController extends Controller {
     @Util
     protected static void renderJSON(Object o, JsonSerializer<?>... adapters) {
         String callback = getCallbackParameter();
+        String json = createGson(adapters).toJson(o);
         if (callback != null) {
-            Controller.renderJSON(String.format(CALLBACK_FORMAT, callback, createGson(adapters).toJson(o)));
+            Controller.renderJSON(String.format(CALLBACK_FORMAT, callback, json));
         } else {
-            Controller.renderJSON(o, adapters);
+            Controller.renderJSON(json);
         }
     }
 
     @Util
     protected static void renderJSON(Object o) {
         String callback = getCallbackParameter();
+        String json = createGson().toJson(o);
         if (callback != null) {
-            Controller.renderJSON(String.format(CALLBACK_FORMAT, callback, createGson().toJson(o)));
+            Controller.renderJSON(String.format(CALLBACK_FORMAT, callback, json));
         } else {
-            Controller.renderJSON(o);
+            Controller.renderJSON(json);
         }
     }
 
