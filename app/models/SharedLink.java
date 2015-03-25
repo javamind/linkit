@@ -2,6 +2,8 @@ package models;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+
+import controllers.api.NoExposeExclusionStrategy;
 import models.activity.SharedLinkActivity;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -28,6 +30,7 @@ public class SharedLink extends Model {
     public String URL;
 
     @ManyToOne(optional = false)
+    @NoExposeExclusionStrategy.NoExpose
     public Member member;
 
     public SharedLink(String name, String URL) {

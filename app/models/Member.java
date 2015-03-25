@@ -127,15 +127,18 @@ public class Member extends Model implements Lookable, Comparable<Member> {
      * Members he follows
      */
     @ManyToMany
+    @NoExposeExclusionStrategy.NoExpose
     public Set<Member> links = new HashSet<Member>();
     /**
      * Members who follow him : reverse-mapping of {@link Member#links}
      */
     @ManyToMany(mappedBy = "links")
+    @NoExposeExclusionStrategy.NoExpose
     public Set<Member> linkers = new HashSet<Member>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @MapKey(name="provider")
+    @NoExposeExclusionStrategy.NoExpose
     public Map<ProviderType,Account> accounts = new EnumMap<ProviderType, Account>(ProviderType.class);
 
     @ManyToMany(cascade = CascadeType.PERSIST)

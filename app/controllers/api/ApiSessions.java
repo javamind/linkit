@@ -20,7 +20,7 @@ public class ApiSessions extends JsonpController {
 
     public static void talks(boolean details) {
         Planning planning = PlanedSlot.on(ConferenceEvent.CURRENT, true);
-        renderJSON(PlanedSlot.class, planning.getSlots(), details ? DETAILED_SLOT_SERIALIZER : SLOT_SERIALIZER);
+        renderJSON(planning.getSlots(), details ? DETAILED_SLOT_SERIALIZER : SLOT_SERIALIZER);
     }
 
     public static void talk(long id, boolean details) {
@@ -30,18 +30,18 @@ public class ApiSessions extends JsonpController {
         if (slot == null) {
             slot = new PlanedSlot(talk);
         }
-        renderJSON(PlanedSlot.class, slot, details ? DETAILED_TALK_SERIALIZER : TALK_SERIALIZER);
+        renderJSON(slot, details ? DETAILED_TALK_SERIALIZER : TALK_SERIALIZER);
     }
 
     public static void lightningTalks(boolean details) {
         List<LightningTalk> talks = LightningTalk.findAllOn(ConferenceEvent.CURRENT);
-        renderJSON(LightningTalk.class, talks, details ? DETAILED_LT_SERIALIZER : LT_SERIALIZER);
+        renderJSON(talks, details ? DETAILED_LT_SERIALIZER : LT_SERIALIZER);
     }
 
     public static void lightningTalk(long id, boolean details) {
         LightningTalk talk = LightningTalk.findById(id);
         notFoundIfNull(talk);
-        renderJSON(LightningTalk.class, talk, details ? DETAILED_LT_SERIALIZER : LT_SERIALIZER);
+        renderJSON(talk, details ? DETAILED_LT_SERIALIZER : LT_SERIALIZER);
     }
 
 
