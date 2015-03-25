@@ -7,6 +7,8 @@ import controllers.Mails;
 import java.util.*;
 import javax.annotation.Nullable;
 import javax.persistence.*;
+
+import controllers.api.NoExposeExclusionStrategy;
 import models.activity.Activity;
 import models.activity.CommentSessionActivity;
 import models.activity.LookSessionActivity;
@@ -68,6 +70,7 @@ public abstract class Session extends Model implements Lookable, Comparable<Sess
 
     @ManyToMany
     @Required
+    @NoExposeExclusionStrategy.NoExpose
     public Set<Member> speakers = new HashSet<Member>();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
@@ -79,6 +82,7 @@ public abstract class Session extends Model implements Lookable, Comparable<Sess
     public List<SessionComment> comments = new ArrayList<SessionComment>();
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NoExposeExclusionStrategy.NoExpose
     public List<Vote> votes;
 
     /** Number of consultation */

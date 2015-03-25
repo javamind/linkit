@@ -13,6 +13,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import controllers.api.NoExposeExclusionStrategy;
 import models.activity.StatusActivity;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -33,6 +35,7 @@ public abstract class Account extends Model implements Comparable<Account> {
     
     @Required
     @ManyToOne(optional = false)
+    @NoExposeExclusionStrategy.NoExpose
     public Member member;
 
     // Authentication provider : linkit, twitter, google, ...
